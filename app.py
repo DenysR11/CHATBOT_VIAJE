@@ -4,7 +4,7 @@ import requests
 
 app = Flask(__name__)
 
-# Configuración de las APIs (puedes cambiar esto por un archivo `config.py` si prefieres)
+# Configuración de las APIs
 RAPIDAPI_KEY = 'tu_clave_rapidapi'
 AIRBNB_HOST = 'airbnb19.p.rapidapi.com'
 BOOKING_HOST = 'booking-com15.p.rapidapi.com'
@@ -27,7 +27,7 @@ def search_airbnb_properties(city, currency='USD', adults=1):
     response = requests.get(url, headers=headers, params=querystring)
     return response.json() if response.status_code == 200 else {"error": "Error en Airbnb API"}
 
-# Función para buscar atracciones en Booking
+
 def search_booking_attractions(city, currency='USD'):
     url = "https://booking-com15.p.rapidapi.com/api/v1/attraction/searchAttractions"
     querystring = {
@@ -44,12 +44,12 @@ def search_booking_attractions(city, currency='USD'):
     response = requests.get(url, headers=headers, params=querystring)
     return response.json() if response.status_code == 200 else {"error": "Error en Booking API"}
 
-# Ruta principal para mostrar el formulario
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
-# Ruta para manejar la interacción del chatbot
+
 @app.route('/chatbot', methods=['POST'])
 def chatbot():
     city = request.form.get('city', 'Cancun')
