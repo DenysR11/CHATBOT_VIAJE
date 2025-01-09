@@ -1,0 +1,25 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - app  # Cambia 'app' por el nombre de tu rama de trabajo
+
+jobs:
+  build:
+    name: Build and analyze
+    runs-on: windows-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Deshabilitar el "shallow clone" para un análisis más preciso
+      - uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      # Si deseas que el trabajo falle cuando el Quality Gate sea rojo, descomenta las siguientes líneas:
+      # - uses: SonarSource/sonarqube-quality-gate-action@v1
+      #   timeout-minutes: 5
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
