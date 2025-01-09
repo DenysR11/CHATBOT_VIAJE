@@ -3,7 +3,7 @@ from flask import Flask, request, render_template, jsonify, send_file
 import pdfkit
 import io
 
-openai.api_key = "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"  # Reemplaza con tu clave válida
+openai.api_key = "sk-proj-7LwTHfvvDF6e....." #Por seguridad no colocare la api key 
 
 
 def interactuar_con_chatgpt(mensaje_usuario):
