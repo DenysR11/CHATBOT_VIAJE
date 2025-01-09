@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Support</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="chat-widget">
+        <div class="chat-header">
+            <img src="{{ url_for('static', filename='chat2-icon.jpg') }}" alt="Chat Icon" class="chat-icon">
+            <div class="header-text">
+                <h2>QRS CHAT</h2>
+                <p>Hola, soy QRS un bot creado para ayudarte! :D</p>
+            </div>
+        </div>
+        <div class="chat-body" id="messages">
+            
+        </div>
+               
+<div class="typing-indicator" id="typing-indicator">
+    <div class="dots dot1"></div>
+    <div class="dots dot2"></div>
+    <div class="dots dot3"></div>
+</div>
+        <div class="chat-footer">
+            <input type="text" id="userInput" placeholder="Escribe un mensaje...">
+            <button id="sendButton">Enviar</button>
+        </div>
+
+
+    </div>
+
+
+    <script>
+       document.getElementById("sendButton").addEventListener("click", enviarMensaje);
+
+async function enviarMensaje() {
+    const userInput = document.getElementById("userInput").value.trim();
+    const messages = document.getElementById("messages");
+
+    if (!userInput) return; 
+
+    
+    const userMessage = document.createElement("div");
+    userMessage.classList.add("user-message");
+    userMessage.textContent = userInput;
+    messages.appendChild(userMessage);
+
+    
+    document.getElementById("typing-indicator").style.display = "block";
+
+    
+    try {
+        const response = await fetch("/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `mensaje=${encodeURIComponent(userInput)}`
+        });
+
+        const data = await response.json();
+
+        
+        const botMessage = document.createElement("div");
+        botMessage.classList.add("bot-message");
+        botMessage.innerHTML = data.respuesta; 
+        messages.appendChild(botMessage);
+
+        
+        document.getElementById("typing-indicator").style.display = "none";
+
+        
+        messages.scrollTop = messages.scrollHeight;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+
+    document.getElementById("userInput").value = ""; 
+}
+
+        
+        function modificarItinerario() {
+            alert("¡Claro! Dime qué te gustaría modificar.");
+        }
+
+        
+        function descargarPDF() {
+            fetch("/descargar_pdf", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `contenido=${encodeURIComponent(document.getElementById("messages").innerHTML)}`
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "informacion_viaje.pdf";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            })
+            .catch(error => console.error("Error al descargar el PDF:", error));
+        }
+    </script>
+</body>
+</html>
